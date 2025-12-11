@@ -1,16 +1,8 @@
 from pyswip import Prolog
-import os
 
-# Initialize Prolog engine and load knowledge bases
+# Initialize Prolog engine and load knowledge base
 prolog = Prolog()
-
-# Load all Prolog files
-prolog_dir = os.path.join(os.path.dirname(__file__), '..', 'prolog')
-kb_files = ['logic.pl', 'city_london.pl', 'city_ba.pl', 'city_tokyo.pl']
-
-for kb_file in kb_files:
-    kb_path = os.path.join(prolog_dir, kb_file)
-    prolog.consult(kb_path)
+prolog.consult("kb.pl")
 
 def ask_question(question, options):
     """
@@ -32,7 +24,7 @@ def ask_question(question, options):
     
     while True:
         try:
-            choice = int(input("Enter the option you prefer: "))
+            choice = int(input("Enter the option your prefer: "))
             if 1 <= choice <= len(options):
                 return options[choice - 1]
             else:
@@ -68,7 +60,7 @@ def expert_system():
         
         answer = ask_question(question, options)
         
-        # Price needs quotes in Prolog due to hyphen character
+        # Price needs quotes in Prolog deu to hyphen character
         if attribute == 'price':
             prolog.assertz(f"known({attribute}, '{answer}', yes)")
         else:
@@ -81,17 +73,16 @@ def expert_system():
         recommendation = recommendations[0]
         name = recommendation['Name']
         
-        # Retrieve user choices for display 
-        city_data = list(prolog.query("known(city, City, yes)"))
+        # Retrieve user choices for displadiy 
         activity_data = list(prolog.query("known(activity, Activity, yes)"))
+        location_data = list(prolog.query("known(location, Location, yes)"))
         
-        if city_data and activity_data:
-            city = city_data[0]['City']
+        if activity_data and location_data:
             activity = activity_data[0]['Activity']
+            location = location_data[0]['Location']
             
-            print(f"\n✨ Recommendation: {name}")
-            print(f"  City: {city.upper()}")
-            print(f"  Type: {activity.capitalize()}")
+            print(f"\n{activity.capitalize()}: {name}")
+            print(f"  Location: {location.capitalize()}")
             
             # Query Prolog for relevant details based on activity type
             details = list(prolog.query("get_detail(_, Label, Value)"))
@@ -100,12 +91,13 @@ def expert_system():
                 label = detail['Label']
                 value = str(detail['Value'])
                 formatted_value = value.replace('_', ' ').title()
+                
+                if label == 'Price Range':
+                    formatted_value = f"£{value}"
+                
                 print(f"  {label}: {formatted_value}")
             
-            print(f"\n🎯 Search for '{name}' on Google Maps and enjoy {city.upper()}!")
-        else:
-            print(f"\n✨ Recommendation: {name}")
-            print("\n🎯 Search for this on Google Maps!")
+            print("\nFill this into Google Maps and enjoy London!")
     else:
         print("\nSorry, no recommendations found matching your criteria. Try different options or a different location.")
 
