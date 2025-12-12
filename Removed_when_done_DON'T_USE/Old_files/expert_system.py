@@ -2,11 +2,18 @@ from pyswip import Prolog
 
 # Initialize Prolog engine and load knowledge base
 prolog = Prolog()
-prolog.consult("kb_ba.pl")
+prolog.consult("kb.pl")
 
 def ask_question(question, options):
     """
     Display question with options and collect user's selection.
+    
+    Args:
+        question: Question text to display
+        options: List of possible answer options
+        
+    Returns:
+        Selected option from the options list
     """
     print(f"\n{question}")
     
@@ -17,7 +24,7 @@ def ask_question(question, options):
     
     while True:
         try:
-            choice = int(input("Enter the option you prefer: "))
+            choice = int(input("Enter the option your prefer: "))
             if 1 <= choice <= len(options):
                 return options[choice - 1]
             else:
@@ -25,11 +32,17 @@ def ask_question(question, options):
         except ValueError:
             print("Please enter a valid number corresponding to the option you prefer")
 
+
 def expert_system():
     """
     Main expert system loop that gathers preferences and provides recommendations.
+    
+    Args:
+        None
+        
+    Returns:
+        None
     """
-    # Clear any previous answers
     list(prolog.query("clear_known"))
     
     # Question loop
@@ -47,18 +60,20 @@ def expert_system():
         
         answer = ask_question(question, options)
         
-        # Extract base value for Prolog (remove ranges in parentheses)
-        # E.g., "budget (under 8,000 ARS)" -> "budget"
-        prolog_value = answer.split(' (')[0] if ' (' in answer else answer
-        
-        # Assert the base value to Prolog
-        prolog.assertz(f"known({attribute}, {prolog_value}, yes)")
+        # Price needs quotes in Prolog deu to hyphen character
+        if attribute == 'price':
+            prolog.assertz(f"known({attribute}, '{answer}', yes)")
+        else:
+            prolog.assertz(f"known({attribute}, {answer}, yes)")
 
-    # Query Prolog for ALL matching recommendations
+    # Query Prolog for final recommendation
     recommendations = list(prolog.query("recommend(Name)"))
     
     if recommendations:
-        # Retrieve user choices for display 
+        recommendation = recommendations[0]
+        name = recommendation['Name']
+        
+        # Retrieve user choices for displadiy 
         activity_data = list(prolog.query("known(activity, Activity, yes)"))
         location_data = list(prolog.query("known(location, Location, yes)"))
         
@@ -66,36 +81,24 @@ def expert_system():
             activity = activity_data[0]['Activity']
             location = location_data[0]['Location']
             
-            # Show count of recommendations
-            count = len(recommendations)
-            if count == 1:
-                print(f"\n✨ Found 1 recommendation for you:")
-            else:
-                print(f"\n✨ Found {count} recommendations for you:")
+            print(f"\n{activity.capitalize()}: {name}")
+            print(f"  Location: {location.capitalize()}")
             
-            # Display all recommendations
-            for i, rec in enumerate(recommendations, 1):
-                name = rec['Name']
-                
-                if count > 1:
-                    print(f"\n{i}. {name}")
-                else:
-                    print(f"\n{name}")
-                
-                print(f"   Area: {str(location).replace('_', ' ').title()}")
-                
-                # Query Prolog for relevant details based on activity type
-                details = list(prolog.query("get_detail(_, Label, Value)"))
-                
-                for detail in details:
-                    label = detail['Label']
-                    value = str(detail['Value'])
-                    formatted_value = value.replace('_', ' ').title()
-                    
-                    print(f"   {label}: {formatted_value}")
+            # Query Prolog for relevant details based on activity type
+            details = list(prolog.query("get_detail(_, Label, Value)"))
             
-            print("\n🎯 Pick your favorite and put it into Google Maps - enjoy Buenos Aires!")
+            for detail in details:
+                label = detail['Label']
+                value = str(detail['Value'])
+                formatted_value = value.replace('_', ' ').title()
+                
+                if label == 'Price Range':
+                    formatted_value = f"£{value}"
+                
+                print(f"  {label}: {formatted_value}")
+            
+            print("\nFill this into Google Maps and enjoy London!")
     else:
-        print("\nSorry, no recommendations found matching your criteria. Try different options or a different area.")
+        print("\nSorry, no recommendations found matching your criteria. Try different options or a different location.")
 
 expert_system()

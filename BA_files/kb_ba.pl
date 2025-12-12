@@ -273,7 +273,7 @@ restaurant(
     'Santos Manjares',
     microcentro,
     parrilla,
-    affordable,
+    moderate,
     walkable,
     [none, gluten_free],
     [lunch, dinner],
@@ -285,7 +285,7 @@ restaurant(
     'La Posta de los Tucu',
     microcentro,
     parrilla,
-    affordable,
+    moderate,
     walkable,
     [none, gluten_free],
     [lunch, dinner],
@@ -804,7 +804,7 @@ sightseeing(
 recommend(Name) :-
     known(activity, restaurant, yes),
     known(location, Location, yes),
-    known(distance, Distance, yes),
+    known(distance, UserDistance, yes),
     known(cuisine, Cuisine, yes),
     known(price, Price, yes),
     known(diet, Diet, yes),
@@ -813,6 +813,7 @@ recommend(Name) :-
     known(group_size, GroupSize, yes),
     known(alcohol_ok, yes, yes),  % User is okay with alcohol
     restaurant(Name, Location, Cuisine, Price, Distance, Diets, Times, Vibe, GroupSizes, _),  % Any alcohol status
+    (UserDistance = doesnt_matter ; Distance = UserDistance),  % Match distance or doesn't matter
     member(Diet, Diets),
     member(Time, Times),
     member(GroupSize, GroupSizes).
@@ -821,7 +822,7 @@ recommend(Name) :-
 recommend(Name) :-
     known(activity, restaurant, yes),
     known(location, Location, yes),
-    known(distance, Distance, yes),
+    known(distance, UserDistance, yes),
     known(cuisine, Cuisine, yes),
     known(price, Price, yes),
     known(diet, Diet, yes),
@@ -830,6 +831,7 @@ recommend(Name) :-
     known(group_size, GroupSize, yes),
     known(alcohol_ok, no, yes),  % User minds alcohol
     restaurant(Name, Location, Cuisine, Price, Distance, Diets, Times, Vibe, GroupSizes, no),  % Only non-alcohol places
+    (UserDistance = doesnt_matter ; Distance = UserDistance),  % Match distance or doesn't matter
     member(Diet, Diets),
     member(Time, Times),
     member(GroupSize, GroupSizes).
@@ -838,59 +840,66 @@ recommend(Name) :-
 recommend(Name) :-
     known(activity, pub, yes),
     known(location, Location, yes),
-    known(distance, Distance, yes),
+    known(distance, UserDistance, yes),
     known(pub_type, PubType, yes),
-    pub(Name, Location, PubType, Distance).
+    pub(Name, Location, PubType, Distance),
+    (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Chill spots
 recommend(Name) :-
     known(activity, chill, yes),
     known(location, Location, yes),
-    known(distance, Distance, yes),
+    known(distance, UserDistance, yes),
     known(chill_type, ChillType, yes),
-    chill(Name, Location, ChillType, Distance).
+    chill(Name, Location, ChillType, Distance),
+    (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Sightseeing – museums
 recommend(Name) :-
     known(activity, sightseeing, yes),
     known(location, Location, yes),
-    known(distance, Distance, yes),
+    known(distance, UserDistance, yes),
     known(sight_type, museum, yes),
     known(art_type, ArtType, yes),
-    sightseeing(Name, Location, museum, ArtType, Distance).
+    sightseeing(Name, Location, museum, ArtType, Distance),
+    (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Sightseeing – modern tourist spots
 recommend(Name) :-
     known(activity, sightseeing, yes),
     known(location, Location, yes),
-    known(distance, Distance, yes),
+    known(distance, UserDistance, yes),
     known(sight_type, modern_tourist_spot, yes),
     known(indoor_outdoor, IndoorOutdoor, yes),
-    sightseeing(Name, Location, modern_tourist_spot, IndoorOutdoor, Distance).
+    sightseeing(Name, Location, modern_tourist_spot, IndoorOutdoor, Distance),
+    (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Sightseeing – old monuments
 recommend(Name) :-
     known(activity, sightseeing, yes),
     known(location, Location, yes),
-    known(distance, Distance, yes),
+    known(distance, UserDistance, yes),
     known(sight_type, old_monument, yes),
-    sightseeing(Name, Location, old_monument, outdoor, Distance).
+    sightseeing(Name, Location, old_monument, outdoor, Distance),
+    (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Sightseeing – outdoor scenery
 recommend(Name) :-
     known(activity, sightseeing, yes),
     known(location, Location, yes),
-    known(distance, Distance, yes),
+    known(distance, UserDistance, yes),
     known(sight_type, outdoor_scenery, yes),
-    sightseeing(Name, Location, outdoor_scenery, outdoor, Distance).
+    sightseeing(Name, Location, outdoor_scenery, outdoor, Distance),
+    (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Sightseeing – theatre (Teatro Colon)
 recommend(Name) :-
     known(activity, sightseeing, yes),
     known(location, Location, yes),
-    known(distance, Distance, yes),
+    known(distance, UserDistance, yes),
     known(sight_type, theatre, yes),
-    sightseeing(Name, Location, theatre, _, Distance).
+    sightseeing(Name, Location, theatre, _, Distance),
+    (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % ============================================
 % QUESTION LOGIC (ASKABLES)
@@ -902,21 +911,42 @@ next_question(activity,
               [restaurant, pub, chill, sightseeing]) :-
     \+ known(activity, _, _).
 
-% Location (neighborhood-ish)
+% Distance from Esmeralda 920 (asked BEFORE location)
+next_question(distance,
+              'How far from the residence hall at Esmeralda 920 are you willing to go?',
+              [walkable, short_ride, long_ride, doesnt_matter]) :-
+    known(activity, Activity, yes),
+    member(Activity, [restaurant, pub, chill, sightseeing]),
+    \+ known(distance, _, _).
+
+% Location - shows only neighborhoods matching distance preference
+next_question(location,
+              'Which area of Buenos Aires would you prefer?',
+              [microcentro, puerto_madero]) :-
+    known(activity, _, yes),
+    known(distance, walkable, yes),
+    \+ known(location, _, _).
+
+next_question(location,
+              'Which area of Buenos Aires would you prefer?',
+              [san_telmo, recoleta]) :-
+    known(activity, _, yes),
+    known(distance, short_ride, yes),
+    \+ known(location, _, _).
+
+next_question(location,
+              'Which area of Buenos Aires would you prefer?',
+              [palermo, belgrano]) :-
+    known(activity, _, yes),
+    known(distance, long_ride, yes),
+    \+ known(location, _, _).
+
 next_question(location,
               'Which area of Buenos Aires would you prefer?',
               [microcentro, puerto_madero, san_telmo, recoleta, palermo, belgrano]) :-
     known(activity, _, yes),
+    known(distance, doesnt_matter, yes),
     \+ known(location, _, _).
-
-% Distance from Esmeralda 920
-next_question(distance,
-              'How far from the residence hall at Esmeralda 920 are you willing to go?',
-              [walkable, short_ride, long_ride]) :-
-    known(activity, Activity, yes),
-    member(Activity, [restaurant, pub, chill, sightseeing]),
-    known(location, _, yes),
-    \+ known(distance, _, _).
 
 % Restaurant-specific
 next_question(cuisine,
