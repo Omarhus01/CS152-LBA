@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext
 from pyswip import Prolog
 import threading
+import webbrowser
 
 class BAExpertSystemGUI:
     def __init__(self, root):
@@ -13,6 +14,7 @@ class BAExpertSystemGUI:
         # Initialize Prolog engine
         self.prolog = Prolog()
         self.prolog.consult("kb_ba.pl")
+        self.prolog.consult("maps_urls.pl")  # Load Google Maps URLs
         
         # Store user's answers for back button functionality
         self.answer_history = []
@@ -61,6 +63,9 @@ class BAExpertSystemGUI:
         
         self.chat_canvas.create_window((0, 0), window=self.chat_frame, anchor="nw", width=750)
         self.chat_canvas.configure(yscrollcommand=chat_scrollbar.set)
+        
+        # Enable mouse wheel scrolling
+        self.chat_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
         
         self.chat_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         chat_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -128,6 +133,47 @@ class BAExpertSystemGUI:
         # Auto-scroll to bottom
         self.chat_canvas.update_idletasks()
         self.chat_canvas.yview_moveto(1.0)
+    
+    def add_maps_button(self, place_name):
+        """Add a Google Maps button for a specific place"""
+        # Query Prolog for the URL
+        url_query = f"maps_url('{place_name}', URL)"
+        urls = list(self.prolog.query(url_query))
+        
+        if urls and 'URL' in urls[0]:
+            url = urls[0]['URL']
+            
+            # Create button frame
+            button_frame = tk.Frame(self.chat_frame, bg='#e8f4f8')
+            button_frame.pack(fill=tk.X, pady=(0, 10), anchor='w', padx=(10, 200))
+            
+            # Create Google Maps button
+            maps_btn = tk.Button(
+                button_frame,
+                text=f"🗺️  Open {place_name} in Google Maps",
+                font=("Segoe UI", 10),
+                bg='#4285f4',  # Google blue color
+                fg='white',
+                relief=tk.FLAT,
+                padx=15,
+                pady=8,
+                command=lambda: webbrowser.open(url),
+                cursor="hand2",
+                borderwidth=0
+            )
+            maps_btn.pack(anchor='w', padx=10)
+            
+            # Hover effect
+            maps_btn.bind("<Enter>", lambda e: maps_btn.config(bg='#357ae8'))
+            maps_btn.bind("<Leave>", lambda e: maps_btn.config(bg='#4285f4'))
+            
+            # Auto-scroll to bottom
+            self.chat_canvas.update_idletasks()
+            self.chat_canvas.yview_moveto(1.0)
+    
+    def _on_mousewheel(self, event):
+        """Handle mouse wheel scrolling"""
+        self.chat_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
     
     def add_user_message(self, message):
         """Add a user message to the chat"""
@@ -240,8 +286,12 @@ class BAExpertSystemGUI:
         # Store answer in history
         self.answer_history.append((self.current_attribute, option))
         
+        # Extract base value for Prolog (remove ranges in parentheses)
+        # E.g., "budget (under 8,000 ARS)" -> "budget"
+        prolog_value = option.split(' (')[0] if ' (' in option else option
+        
         # Assert knowledge in Prolog
-        self.prolog.assertz(f"known({self.current_attribute}, {option}, yes)")
+        self.prolog.assertz(f"known({self.current_attribute}, {prolog_value}, yes)")
         
         # Clear options
         for widget in self.options_container.winfo_children():
@@ -312,6 +362,9 @@ class BAExpertSystemGUI:
                 # Add recommendation as bot message
                 rec_text = "\n".join(details)
                 self.add_bot_message(rec_text)
+                
+                # Add Google Maps button for this recommendation
+                self.add_maps_button(name)
             
             self.add_bot_message("🎯 Pick your favorite and open it in Google Maps.\nEnjoy Buenos Aires! 🇦🇷")
         else:

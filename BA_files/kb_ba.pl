@@ -2,6 +2,8 @@
 % DYNAMIC STATE
 % ============================================
 :- dynamic known/3.
+:- dynamic maps_url/2.
+:- discontiguous get_detail/3.
 
 clear_known :- retractall(known(_, _, _)).
 
@@ -26,7 +28,7 @@ restaurant(
     'Don Julio',
     palermo,
     parrilla,
-    high,
+    luxury,
     long_ride,
     [none, gluten_free],
     [lunch, dinner],
@@ -38,7 +40,7 @@ restaurant(
     'La Cabrera',
     palermo,
     parrilla,
-    high,
+    expensive,
     long_ride,
     [none, gluten_free],
     [dinner, late_night],
@@ -50,7 +52,7 @@ restaurant(
     'Nola',
     palermo,
     burgers,
-    medium,
+    affordable,
     long_ride,
     [none, vegetarian],
     [lunch, dinner, late_night],
@@ -62,10 +64,10 @@ restaurant(
     'Rapanui Palermo',
     palermo,
     gelato,
-    medium,
+    budget,
     long_ride,
     [none, vegetarian, vegan, gluten_free],
-    [lunch, dinner, late_night],
+    [breakfast, brunch, lunch, afternoon, dinner, late_night],
     casual,
     [solo, couple, small_group],
     no
@@ -74,10 +76,10 @@ restaurant(
     'Cafe Registrado',
     palermo,
     cafe,
-    medium,
+    affordable,
     long_ride,
     [none, vegetarian, vegan],
-    [breakfast, lunch, dinner],
+    [breakfast, brunch, lunch, afternoon, dinner, late_night],
     casual,
     [solo, couple, small_group],
     yes
@@ -86,7 +88,7 @@ restaurant(
     'Bio Solo Organico',
     palermo,
     vegetarian,
-    medium,
+    affordable,
     long_ride,
     [vegetarian, vegan, gluten_free],
     [breakfast, lunch, dinner],
@@ -100,7 +102,7 @@ restaurant(
     'El Desnivel',
     san_telmo,
     parrilla,
-    low,
+    affordable,
     short_ride,
     [none, gluten_free],
     [lunch, dinner],
@@ -112,7 +114,7 @@ restaurant(
     'La Brigada',
     san_telmo,
     parrilla,
-    high,
+    expensive,
     short_ride,
     [none, gluten_free],
     [dinner, late_night],
@@ -124,7 +126,7 @@ restaurant(
     'El Banco Rojo',
     san_telmo,
     burgers,
-    low,
+    budget,
     short_ride,
     [none, vegetarian],
     [lunch, dinner, late_night],
@@ -136,7 +138,7 @@ restaurant(
     'Hierbabuena',
     san_telmo,
     vegetarian,
-    medium,
+    affordable,
     short_ride,
     [vegetarian, vegan, gluten_free],
     [lunch, dinner],
@@ -148,7 +150,7 @@ restaurant(
     'Cafe San Juan',
     san_telmo,
     pasta,
-    high,
+    moderate,
     short_ride,
     [none, vegetarian],
     [lunch, dinner],
@@ -162,7 +164,7 @@ restaurant(
     'Guerrin',
     microcentro,
     pizza,
-    low,
+    budget,
     walkable,
     [none, vegetarian],
     [lunch, dinner, late_night],
@@ -174,7 +176,7 @@ restaurant(
     'El Cuartito',
     microcentro,
     pizza,
-    medium,
+    affordable,
     walkable,
     [none, vegetarian],
     [lunch, dinner, late_night],
@@ -186,7 +188,7 @@ restaurant(
     'Las Cuartetas',
     microcentro,
     pizza,
-    low,
+    budget,
     walkable,
     [none, vegetarian],
     [lunch, dinner, late_night],
@@ -198,7 +200,7 @@ restaurant(
     'Kentucky Pizza',
     microcentro,
     pizza,
-    low,
+    budget,
     walkable,
     [none, vegetarian],
     [dinner, late_night],
@@ -210,7 +212,7 @@ restaurant(
     'La Americana',
     microcentro,
     pizza,
-    low,
+    budget,
     walkable,
     [none, vegetarian],
     [lunch, dinner, late_night],
@@ -222,10 +224,22 @@ restaurant(
     'Cadore',
     microcentro,
     gelato,
-    low,
+    budget,
     walkable,
     [none, vegetarian, vegan, gluten_free],
-    [lunch, dinner, late_night],
+    [breakfast, brunch, lunch, afternoon, dinner, late_night],
+    casual,
+    [solo, couple, small_group],
+    no
+).
+restaurant(
+    'Rapanui Microcentro',
+    microcentro,
+    gelato,
+    budget,
+    walkable,
+    [none, vegetarian, vegan, gluten_free],
+    [breakfast, brunch, lunch, afternoon, dinner, late_night],
     casual,
     [solo, couple, small_group],
     no
@@ -234,10 +248,10 @@ restaurant(
     'Cafe Tortoni',
     microcentro,
     cafe,
-    medium,
+    affordable,
     walkable,
     [none, vegetarian, vegan],
-    [breakfast, lunch, dinner],
+    [breakfast, brunch, lunch, afternoon, dinner, late_night],
     touristy,
     [solo, couple, small_group, large_group],
     yes
@@ -246,7 +260,7 @@ restaurant(
     'Palacio de la Papa Frita',
     microcentro,
     parrilla,
-    medium,
+    affordable,
     walkable,
     [none, gluten_free],
     [lunch, dinner],
@@ -259,7 +273,7 @@ restaurant(
     'Santos Manjares',
     microcentro,
     parrilla,
-    medium,
+    affordable,
     walkable,
     [none, gluten_free],
     [lunch, dinner],
@@ -271,7 +285,7 @@ restaurant(
     'La Posta de los Tucu',
     microcentro,
     parrilla,
-    medium,
+    affordable,
     walkable,
     [none, gluten_free],
     [lunch, dinner],
@@ -283,7 +297,7 @@ restaurant(
     'El Establo Parrilla',
     microcentro,
     parrilla,
-    medium,
+    affordable,
     walkable,
     [none, gluten_free],
     [lunch, dinner, late_night],
@@ -295,7 +309,7 @@ restaurant(
     'Broccolino',
     microcentro,
     pasta,
-    medium,
+    affordable,
     walkable,
     [none, vegetarian, vegan],
     [lunch, dinner],
@@ -307,7 +321,7 @@ restaurant(
     'La Estancia',
     microcentro,
     parrilla,
-    medium,
+    affordable,
     walkable,
     [none, gluten_free],
     [lunch, dinner],
@@ -319,7 +333,7 @@ restaurant(
     'Sagardi Argentina',
     microcentro,
     parrilla,
-    high,
+    expensive,
     walkable,
     [none, gluten_free],
     [lunch, dinner],
@@ -333,10 +347,10 @@ restaurant(
     'La Biela',
     recoleta,
     cafe,
-    medium,
+    affordable,
     short_ride,
     [none, vegetarian, vegan],
-    [breakfast, lunch, dinner],
+    [breakfast, brunch, lunch, afternoon, dinner, late_night],
     touristy,
     [solo, couple, small_group],
     yes
@@ -345,7 +359,7 @@ restaurant(
     'Fervor',
     recoleta,
     parrilla,
-    high,
+    luxury,
     short_ride,
     [none, gluten_free],
     [lunch, dinner],
@@ -357,10 +371,10 @@ restaurant(
     'Rapanui Recoleta',
     recoleta,
     gelato,
-    medium,
+    budget,
     short_ride,
     [none, vegetarian, vegan, gluten_free],
-    [lunch, dinner, late_night],
+    [breakfast, brunch, lunch, afternoon, dinner, late_night],
     casual,
     [solo, couple, small_group],
     no
@@ -369,7 +383,7 @@ restaurant(
     'Parrilla Pena',
     recoleta,
     parrilla,
-    medium,
+    moderate,
     short_ride,
     [none, gluten_free],
     [lunch, dinner],
@@ -383,7 +397,7 @@ restaurant(
     'Cabana Las Lilas',
     puerto_madero,
     parrilla,
-    high,
+    luxury,
     walkable,
     [none, gluten_free],
     [lunch, dinner],
@@ -395,7 +409,7 @@ restaurant(
     'Siga La Vaca',
     puerto_madero,
     parrilla,
-    medium,
+    moderate,
     walkable,
     [none, gluten_free],
     [lunch, dinner, late_night],
@@ -407,10 +421,10 @@ restaurant(
     'Olivia Deli Cafe',
     puerto_madero,
     cafe,
-    medium,
+    affordable,
     walkable,
     [none, vegetarian, vegan, gluten_free],
-    [breakfast, lunch, dinner],
+    [breakfast, brunch, lunch, afternoon, dinner, late_night],
     casual,
     [solo, couple, small_group],
     yes
@@ -419,10 +433,10 @@ restaurant(
     'Luccianos Puerto Madero',
     puerto_madero,
     gelato,
-    medium,
+    budget,
     walkable,
     [none, vegetarian, vegan, gluten_free],
-    [lunch, dinner, late_night],
+    [breakfast, brunch, lunch, afternoon, dinner, late_night],
     casual,
     [solo, couple, small_group],
     no
@@ -433,7 +447,7 @@ restaurant(
     'La Mezzetta',
     belgrano,
     pizza,
-    low,
+    budget,
     long_ride,
     [none, vegetarian],
     [dinner, late_night],
@@ -445,7 +459,7 @@ restaurant(
     'Pizzeria El Imperio',
     belgrano,
     pizza,
-    low,
+    budget,
     long_ride,
     [none, vegetarian],
     [dinner, late_night],
@@ -457,10 +471,10 @@ restaurant(
     'Pani Belgrano',
     belgrano,
     cafe,
-    medium,
+    affordable,
     long_ride,
     [none, vegetarian, vegan],
-    [breakfast, lunch, dinner],
+    [breakfast, brunch, lunch, afternoon, dinner, late_night],
     casual,
     [solo, couple, small_group],
     yes
@@ -469,7 +483,7 @@ restaurant(
     'La Dorita Belgrano',
     belgrano,
     parrilla,
-    medium,
+    affordable,
     long_ride,
     [none, gluten_free],
     [lunch, dinner],
@@ -489,12 +503,6 @@ pub(
     'Desarmadero',
     palermo,
     craft_beer,
-    long_ride
-).
-pub(
-    'Mala Praxis',
-    palermo,
-    classic_bar,
     long_ride
 ).
 pub(
@@ -553,12 +561,6 @@ pub(
     'Milion',
     recoleta,
     rooftop,
-    short_ride
-).
-pub(
-    'Notorious',
-    recoleta,
-    live_music,
     short_ride
 ).
 
@@ -927,7 +929,7 @@ next_question(cuisine,
 
 next_question(price,
               'What is your price range per person?',
-              [low, medium, high]) :-
+              ['budget (under 8,000 ARS)', 'affordable (8,000-15,000 ARS)', 'moderate (15,000-25,000 ARS)', 'expensive (25,000-35,000 ARS)', 'luxury (35,000+ ARS)']) :-
     known(activity, restaurant, yes),
     known(location, _, yes),
     known(distance, _, yes),
@@ -946,7 +948,7 @@ next_question(diet,
 
 next_question(time_of_day,
               'What time of day will you be dining?',
-              [breakfast, lunch, dinner, late_night]) :-
+              ['breakfast (7am-11am)', 'brunch (11am-2pm)', 'lunch (12pm-3pm)', 'afternoon (3pm-6pm)', 'dinner (6pm-10pm)', 'late_night (10pm-2am)']) :-
     known(activity, restaurant, yes),
     known(location, _, yes),
     known(distance, _, yes),
@@ -1054,7 +1056,16 @@ get_detail(cuisine, 'Cuisine', Value) :-
 
 get_detail(price, 'Price Level', Value) :-
     known(activity, restaurant, yes),
-    known(price, Value, yes).
+    known(price, PriceCode, yes),
+    price_display(PriceCode, Value).
+
+% Price range display helper
+price_display(budget, 'Budget (under 8,000 ARS)').
+price_display(affordable, 'Affordable (8,000-15,000 ARS)').
+price_display(moderate, 'Moderate (15,000-25,000 ARS)').
+price_display(expensive, 'Expensive (25,000-35,000 ARS)').
+price_display(luxury, 'Luxury (35,000+ ARS)').
+price_display(free, 'Free').
 
 get_detail(pub_type, 'Type', Value) :-
     known(activity, pub, yes),
