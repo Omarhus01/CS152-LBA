@@ -38,7 +38,7 @@ maps_url('Sagardi Argentina', 'https://maps.app.goo.gl/mFoKY5Vmma2DoarE6').
 % RECOLETA
 maps_url('La Biela', 'https://maps.app.goo.gl/1jfreaMhrUVcZLTy6').
 maps_url('Fervor', 'https://maps.app.goo.gl/ndEd3pnQrzL6FSaS6').
-maps_url('Rapanui Recoleta', 'https://maps.app.goo.gl/D4QPLEQ46FrFCFE37').
+maps_url('Rapanui Recoleta', 'https://maps.app.goo.gl/8vJj5x7P9S9n8hJA8').  % Update with actual Recoleta location
 maps_url('Parrilla Pena', 'https://maps.app.goo.gl/r4fjnoMDYXqAGpXEA').
 
 % PUERTO MADERO

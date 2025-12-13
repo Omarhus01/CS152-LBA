@@ -283,12 +283,13 @@ class BAExpertSystemGUI:
         # Add user's choice to chat
         self.add_user_message(formatted_text)
         
-        # Store answer in history
-        self.answer_history.append((self.current_attribute, option))
-        
         # Extract base value for Prolog (remove ranges in parentheses)
         # E.g., "budget (under 8,000 ARS)" -> "budget"
-        prolog_value = option.split(' (')[0] if ' (' in option else option
+        option_str = str(option)  # Ensure it's a string
+        prolog_value = option_str.split(' (')[0] if ' (' in option_str else option_str
+        
+        # Store what we actually assert (not the raw option)
+        self.answer_history.append((self.current_attribute, prolog_value))
         
         # Assert knowledge in Prolog
         self.prolog.assertz(f"known({self.current_attribute}, {prolog_value}, yes)")

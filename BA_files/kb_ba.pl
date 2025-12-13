@@ -12,10 +12,10 @@ clear_known :- retractall(known(_, _, _)).
 % Format: restaurant(Name, Location, Cuisine, Price, Distance, Diets, Times, Vibe, GroupSizes, Alcohol)
 % - Location: palermo | san_telmo | microcentro | recoleta | puerto_madero | belgrano
 % - Cuisine: parrilla | pizza | pasta | burgers | gelato | cafe | vegetarian
-% - Price: low | medium | high
+% - Price: budget | affordable | moderate | expensive | luxury
 % - Distance: walkable | short_ride | long_ride (from Esmeralda 920)
 % - Diets: List of [none, vegetarian, vegan, gluten_free]
-% - Times: List of [breakfast, lunch, dinner, late_night]
+% - Times: List of [breakfast, brunch, lunch, afternoon, dinner, late_night]
 % - Vibe: casual | fancy | romantic | touristy
 % - GroupSizes: List of [solo, couple, small_group, large_group]
 % - Alcohol: yes | no
@@ -493,9 +493,10 @@ restaurant(
 ).
 
 % ============================================
-% PUBS (Name, Location, PubType, Distance)
-% Format: pub(Name, Location, PubType, Distance)
+% PUBS (Name, Location, PubType, Distance, Price)
+% Format: pub(Name, Location, PubType, Distance, Price)
 % - PubType: classic_bar | bar_notable | craft_beer | rooftop | live_music | dance_club
+% - Price: budget | affordable | moderate | expensive | luxury
 % ============================================
 
 % PALERMO – long ride
@@ -503,19 +504,22 @@ pub(
     'Desarmadero',
     palermo,
     craft_beer,
-    long_ride
+    long_ride,
+    affordable
 ).
 pub(
     'Club 69',
     palermo,
     dance_club,
-    long_ride
+    long_ride,
+    expensive
 ).
 pub(
     'Antares Palermo',
     palermo,
     craft_beer,
-    long_ride
+    long_ride,
+    affordable
 ).
 
 % SAN TELMO – short ride
@@ -523,25 +527,29 @@ pub(
     'La Puerta Roja',
     san_telmo,
     classic_bar,
-    short_ride
+    short_ride,
+    affordable
 ).
 pub(
     'Bierlife',
     san_telmo,
     craft_beer,
-    short_ride
+    short_ride,
+    affordable
 ).
 pub(
     'Bar El Federal',
     san_telmo,
     bar_notable,
-    short_ride
+    short_ride,
+    moderate
 ).
 pub(
     'Bar Britanico',
     san_telmo,
     bar_notable,
-    short_ride
+    short_ride,
+    moderate
 ).
 
 % MICROCENTRO / RECOLETA
@@ -549,19 +557,22 @@ pub(
     'Bar Los Galgos',
     microcentro,
     bar_notable,
-    walkable
+    walkable,
+    moderate
 ).
 pub(
     'Floreria Atlantico',
     microcentro,
     classic_bar,
-    walkable
+    walkable,
+    expensive
 ).
 pub(
     'Milion',
     recoleta,
     rooftop,
-    short_ride
+    short_ride,
+    expensive
 ).
 
 % BELGRANO / PUERTO MADERO
@@ -569,31 +580,36 @@ pub(
     'Temple Bar Belgrano',
     belgrano,
     craft_beer,
-    long_ride
+    long_ride,
+    affordable
 ).
 pub(
     'Antares Belgrano',
     belgrano,
     craft_beer,
-    long_ride
+    long_ride,
+    affordable
 ).
 pub(
     'Johnny B Good',
     puerto_madero,
     live_music,
-    walkable
+    walkable,
+    moderate
 ).
 pub(
     'Sky Bar Puerto Madero',
     puerto_madero,
     rooftop,
-    walkable
+    walkable,
+    luxury
 ).
 
 % ============================================
-% CHILL SPOTS (Name, Location, ChillType, Distance)
-% Format: chill(Name, Location, ChillType, Distance)
+% CHILL SPOTS (Name, Location, ChillType, Distance, Price)
+% Format: chill(Name, Location, ChillType, Distance, Price)
 % - ChillType: park | riverfront | plaza | cafe
+% - Price: free | budget | affordable | moderate
 % ============================================
 
 % PALERMO
@@ -601,19 +617,22 @@ chill(
     'Parque Tres de Febrero',
     palermo,
     park,
-    long_ride
+    long_ride,
+    free
 ).
 chill(
     'Jardin Botanico',
     palermo,
     park,
-    long_ride
+    long_ride,
+    free
 ).
 chill(
     'Plaza Armenia',
     palermo,
     plaza,
-    long_ride
+    long_ride,
+    free
 ).
 
 % SAN TELMO / CENTRO
@@ -621,19 +640,22 @@ chill(
     'Parque Lezama',
     san_telmo,
     park,
-    short_ride
+    short_ride,
+    free
 ).
 chill(
     'Plaza Dorrego',
     san_telmo,
     plaza,
-    short_ride
+    short_ride,
+    free
 ).
 chill(
     'Cafe Tortoni',
     microcentro,
     cafe,
-    walkable
+    walkable,
+    affordable
 ).
 
 % RECOLETA / PM
@@ -641,25 +663,29 @@ chill(
     'Plaza Francia',
     recoleta,
     plaza,
-    short_ride
+    short_ride,
+    free
 ).
 chill(
     'Recoleta Cultural Center Cafe',
     recoleta,
     cafe,
-    short_ride
+    short_ride,
+    affordable
 ).
 chill(
     'Puerto Madero Costanera',
     puerto_madero,
     riverfront,
-    walkable
+    walkable,
+    free
 ).
 chill(
     'Reserva Ecologica Costanera Sur',
     puerto_madero,
     riverfront,
-    walkable
+    walkable,
+    free
 ).
 
 % BELGRANO
@@ -667,16 +693,18 @@ chill(
     'Barrancas de Belgrano',
     belgrano,
     park,
-    long_ride
+    long_ride,
+    free
 ).
 
 % ============================================
-% SIGHTSEEING (Name, Location, SightType, Extra, Distance)
-% Format: sightseeing(Name, Location, SightType, Extra, Distance)
+% SIGHTSEEING (Name, Location, SightType, Extra, Distance, Price)
+% Format: sightseeing(Name, Location, SightType, Extra, Distance, Price)
 % - SightType: old_monument | modern_tourist_spot | museum | outdoor_scenery | theatre
 % - Extra: For museums: modern_art | classical_art | artifacts
 %          For modern_tourist_spot: indoor | outdoor
 %          For others: outdoor (fixed)
+% - Price: free | budget | affordable | moderate | expensive
 % ============================================
 
 % MICROCENTRO – walkable
@@ -685,35 +713,40 @@ sightseeing(
     microcentro,
     old_monument,
     outdoor,
-    walkable
+    walkable,
+    free
 ).
 sightseeing(
     'Casa Rosada',
     microcentro,
     old_monument,
     outdoor,
-    walkable
+    walkable,
+    free
 ).
 sightseeing(
     'Cabildo de Buenos Aires',
     microcentro,
     old_monument,
     outdoor,
-    walkable
+    walkable,
+    budget
 ).
 sightseeing(
     'Teatro Colon',
     microcentro,
     theatre,
     indoor,
-    walkable
+    walkable,
+    expensive
 ).
 sightseeing(
     'Galerias Pacifico',
     microcentro,
     modern_tourist_spot,
     indoor,
-    walkable
+    walkable,
+    free
 ).
 
 % SAN TELMO / LA BOCA
@@ -722,21 +755,24 @@ sightseeing(
     san_telmo,
     outdoor_scenery,
     outdoor,
-    long_ride
+    long_ride,
+    free
 ).
 sightseeing(
     'Museo de Arte Moderno de Buenos Aires',
     san_telmo,
     museum,
     modern_art,
-    short_ride
+    short_ride,
+    affordable
 ).
 sightseeing(
     'Museo Historico Nacional',
     san_telmo,
     museum,
     artifacts,
-    short_ride
+    short_ride,
+    budget
 ).
 
 % PUERTO MADERO
@@ -745,14 +781,16 @@ sightseeing(
     puerto_madero,
     modern_tourist_spot,
     outdoor,
-    walkable
+    walkable,
+    free
 ).
 sightseeing(
     'Reserva Ecologica Costanera Sur Sight',
     puerto_madero,
     outdoor_scenery,
     outdoor,
-    walkable
+    walkable,
+    free
 ).
 
 % RECOLETA
@@ -761,14 +799,16 @@ sightseeing(
     recoleta,
     museum,
     classical_art,
-    short_ride
+    short_ride,
+    free
 ).
 sightseeing(
     'Recoleta Cemetery',
     recoleta,
     outdoor_scenery,
     outdoor,
-    short_ride
+    short_ride,
+    free
 ).
 
 % PALERMO
@@ -777,14 +817,16 @@ sightseeing(
     palermo,
     museum,
     modern_art,
-    long_ride
+    long_ride,
+    moderate
 ).
 sightseeing(
     'Planetario Galileo Galilei',
     palermo,
     modern_tourist_spot,
     outdoor,
-    long_ride
+    long_ride,
+    budget
 ).
 
 % BELGRANO
@@ -793,7 +835,8 @@ sightseeing(
     belgrano,
     outdoor_scenery,
     outdoor,
-    long_ride
+    long_ride,
+    free
 ).
 
 % ============================================
@@ -842,7 +885,8 @@ recommend(Name) :-
     known(location, Location, yes),
     known(distance, UserDistance, yes),
     known(pub_type, PubType, yes),
-    pub(Name, Location, PubType, Distance),
+    known(price, Price, yes),
+    pub(Name, Location, PubType, Distance, Price),
     (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Chill spots
@@ -851,7 +895,8 @@ recommend(Name) :-
     known(location, Location, yes),
     known(distance, UserDistance, yes),
     known(chill_type, ChillType, yes),
-    chill(Name, Location, ChillType, Distance),
+    known(price, Price, yes),
+    chill(Name, Location, ChillType, Distance, Price),
     (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Sightseeing – museums
@@ -861,7 +906,8 @@ recommend(Name) :-
     known(distance, UserDistance, yes),
     known(sight_type, museum, yes),
     known(art_type, ArtType, yes),
-    sightseeing(Name, Location, museum, ArtType, Distance),
+    known(price, Price, yes),
+    sightseeing(Name, Location, museum, ArtType, Distance, Price),
     (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Sightseeing – modern tourist spots
@@ -871,7 +917,8 @@ recommend(Name) :-
     known(distance, UserDistance, yes),
     known(sight_type, modern_tourist_spot, yes),
     known(indoor_outdoor, IndoorOutdoor, yes),
-    sightseeing(Name, Location, modern_tourist_spot, IndoorOutdoor, Distance),
+    known(price, Price, yes),
+    sightseeing(Name, Location, modern_tourist_spot, IndoorOutdoor, Distance, Price),
     (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Sightseeing – old monuments
@@ -880,7 +927,8 @@ recommend(Name) :-
     known(location, Location, yes),
     known(distance, UserDistance, yes),
     known(sight_type, old_monument, yes),
-    sightseeing(Name, Location, old_monument, outdoor, Distance),
+    known(price, Price, yes),
+    sightseeing(Name, Location, old_monument, outdoor, Distance, Price),
     (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Sightseeing – outdoor scenery
@@ -889,7 +937,8 @@ recommend(Name) :-
     known(location, Location, yes),
     known(distance, UserDistance, yes),
     known(sight_type, outdoor_scenery, yes),
-    sightseeing(Name, Location, outdoor_scenery, outdoor, Distance),
+    known(price, Price, yes),
+    sightseeing(Name, Location, outdoor_scenery, outdoor, Distance, Price),
     (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % Sightseeing – theatre (Teatro Colon)
@@ -898,7 +947,8 @@ recommend(Name) :-
     known(location, Location, yes),
     known(distance, UserDistance, yes),
     known(sight_type, theatre, yes),
-    sightseeing(Name, Location, theatre, _, Distance),
+    known(price, Price, yes),
+    sightseeing(Name, Location, theatre, _, Distance, Price),
     (UserDistance = doesnt_matter ; Distance = UserDistance).
 
 % ============================================
@@ -1035,6 +1085,15 @@ next_question(pub_type,
     known(distance, _, yes),
     \+ known(pub_type, _, _).
 
+next_question(price,
+              'What is your price range for drinks?',
+              ['budget (under 8,000 ARS)', 'affordable (8,000-15,000 ARS)', 'moderate (15,000-25,000 ARS)', 'expensive (25,000-35,000 ARS)', 'luxury (35,000+ ARS)']) :-
+    known(activity, pub, yes),
+    known(location, _, yes),
+    known(distance, _, yes),
+    known(pub_type, _, yes),
+    \+ known(price, _, _).
+
 % Chill-specific
 next_question(chill_type,
               'What kind of place would you like to relax in?',
@@ -1043,6 +1102,15 @@ next_question(chill_type,
     known(location, _, yes),
     known(distance, _, yes),
     \+ known(chill_type, _, _).
+
+next_question(price,
+              'What is your budget?',
+              ['free', 'budget (under 8,000 ARS)', 'affordable (8,000-15,000 ARS)', 'moderate (15,000-25,000 ARS)']) :-
+    known(activity, chill, yes),
+    known(location, _, yes),
+    known(distance, _, yes),
+    known(chill_type, _, yes),
+    \+ known(price, _, _).
 
 % Sightseeing-specific
 next_question(sight_type,
@@ -1070,6 +1138,20 @@ next_question(indoor_outdoor,
     known(distance, _, yes),
     known(sight_type, modern_tourist_spot, yes),
     \+ known(indoor_outdoor, _, _).
+
+next_question(price,
+              'What is your budget for entry/tickets?',
+              ['free', 'budget (under 8,000 ARS)', 'affordable (8,000-15,000 ARS)', 'moderate (15,000-25,000 ARS)', 'expensive (25,000-35,000 ARS)']) :-
+    known(activity, sightseeing, yes),
+    known(location, _, yes),
+    known(distance, _, yes),
+    known(sight_type, _, yes),
+    ((known(sight_type, museum, yes), known(art_type, _, yes)) ;
+     (known(sight_type, modern_tourist_spot, yes), known(indoor_outdoor, _, yes)) ;
+     (known(sight_type, old_monument, yes)) ;
+     (known(sight_type, outdoor_scenery, yes)) ;
+     (known(sight_type, theatre, yes))),
+    \+ known(price, _, _).
 
 % Optional helper
 all_questions_answered :-
