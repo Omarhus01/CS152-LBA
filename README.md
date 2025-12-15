@@ -8,25 +8,27 @@ This expert system uses **Prolog** for the knowledge base and **Python** (PySWIP
 
 ### Features
 - **38 Restaurants** across 6 neighborhoods with detailed attributes
-- **15 Pubs & Bars** for nightlife
-- **12 Chill Spots** (parks, plazas, riverfront)
-- **16 Sightseeing Attractions** (museums, monuments, outdoor scenery)
+- **15 Pubs & Bars** for nightlife with drink prices
+- **12 Chill Spots** (parks free, cafes with pricing)
+- **16 Sightseeing Attractions** with entry fees (many free!)
 - **Chat-Style GUI** with Tkinter
 - **Google Maps Integration** - clickable buttons for every location
-- **Price Ranges** - actual ARS values displayed (budget, affordable, moderate, expensive, luxury)
+- **Complete Price System** - ALL activities have budget filtering (restaurants, pub drinks, park vs cafe costs, museum entry fees)
+- **Dynamic Location Filtering** - neighborhoods shown based on distance preference
+- **Price Ranges** - actual ARS values displayed (budget, affordable, moderate, expensive, luxury, free)
 - **Time Ranges** - specific hours for dining (breakfast 7-11am, brunch 11am-2pm, etc.)
 
 ### Askables (10 total)
 1. **Activity** - restaurant, pub, chill, sightseeing
-2. **Location** - microcentro, puerto_madero, san_telmo, recoleta, palermo, belgrano
-3. **Distance** - walkable, short_ride, long_ride (from Esmeralda 920)
-4. **Cuisine** - parrilla, pizza, pasta, burgers, gelato, cafe, vegetarian
-5. **Price** - budget (<8k ARS), affordable (8-15k), moderate (15-25k), expensive (25-35k), luxury (35k+)
-6. **Diet** - none, vegetarian, vegan, gluten_free
-7. **Time of Day** - breakfast (7-11am), brunch (11am-2pm), lunch (12-3pm), afternoon (3-6pm), dinner (6-10pm), late_night (10pm-2am)
-8. **Vibe** - casual, fancy, romantic, touristy
-9. **Group Size** - solo, couple, small_group, large_group
-10. **Alcohol** - yes, no
+2. **Distance** - walkable, short_ride, long_ride, doesn't matter (from Esmeralda 920) - *Asked BEFORE location to enable smart filtering*
+3. **Location** - dynamically filtered based on distance (e.g., walkable → microcentro/puerto_madero only)
+4. **Activity-Specific Type** - cuisine (restaurants), pub_type (bars), chill_type (parks/cafes), sight_type (monuments/museums)
+5. **Price** - For ALL activities: restaurant meals, pub drinks, park vs cafe costs, museum entry fees
+6. **Diet** - none, vegetarian, vegan, gluten_free (restaurants only)
+7. **Time of Day** - breakfast (7-11am), brunch (11am-2pm), lunch (12-3pm), afternoon (3-6pm), dinner (6-10pm), late_night (10pm-2am) (restaurants only)
+8. **Vibe** - casual, fancy, romantic, touristy (restaurants only)
+9. **Group Size** - solo, couple, small_group, large_group (restaurants only)
+10. **Alcohol** - yes, no (restaurants only - filters places that serve alcohol)
 
 ## 📁 Project Structure
 
@@ -44,9 +46,42 @@ CS152 LBA/
 
 ## 🚀 How to Run
 
+### ⚙️ Platform Compatibility
+
+**✅ Windows**: Fully tested and works perfectly  
+**✅ macOS**: Compatible with Intel and Apple Silicon Macs  
+**✅ Linux**: Fully supported
+
 ### Prerequisites
+
+#### 1. Install SWI-Prolog
+
+**Windows:**
+- Download from: https://www.swi-prolog.org/download/stable
+- Run the installer (`.exe` file)
+- Make sure to check "Add to PATH" during installation
+
+**macOS:**
+```bash
+# Using Homebrew
+brew install swi-prolog
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt-get update
+sudo apt-get install swi-prolog
+```
+
+#### 2. Install Python Dependencies
 ```bash
 pip install pyswip
+```
+
+**Note for macOS users:** If you encounter issues with PySWIP, you may need to:
+```bash
+pip install pyswip --no-cache-dir
+# Or use Python 3.9+ which has better compatibility
 ```
 
 ### Run the GUI Version (Recommended)
@@ -60,6 +95,22 @@ python ba_expert_system_gui.py
 cd BA_files
 python ba_expert_system.py
 ```
+
+### Troubleshooting
+
+**"SWI-Prolog not found" error:**
+- Windows: Ensure SWI-Prolog is in your PATH environment variable
+- macOS/Linux: Try `which swipl` to verify installation
+
+**"Module pyswip not found":**
+- Run `pip install pyswip` again
+- Try `pip3 install pyswip` if using Python 3
+
+**GUI doesn't open:**
+- Tkinter should be included with Python, but if missing:
+  - Windows: Reinstall Python with "tcl/tk" option checked
+  - macOS: `brew install python-tk`
+  - Linux: `sudo apt-get install python3-tk`
 
 ## 📊 Knowledge Base Statistics
 
@@ -147,11 +198,14 @@ maps_url('Don Julio', 'https://maps.app.goo.gl/xyz123').
 
 ## 💡 Special Features
 
+- **Complete Budget System**: ALL 81 locations have pricing - restaurant meals, pub drink costs, free parks vs paid cafes, museum entry fees
+- **Smart Location Filtering**: Distance preference determines which neighborhoods are shown (walkable → microcentro/puerto_madero, short ride → san_telmo/recoleta, long ride → palermo/belgrano)
 - **All-time availability**: Cafes and gelato shops available at any time of day
 - **Realistic pricing**: ARS ranges based on actual Buenos Aires costs (2025)
 - **Distance-based**: All distances calculated from residence hall at Esmeralda 920
 - **Alcohol filtering**: Option to exclude places that serve alcohol
 - **Dietary filters**: Vegetarian, vegan, gluten-free options clearly marked
+- **Free options**: Many parks, monuments, and plazas are completely free!
 
 ---
 
