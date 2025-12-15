@@ -39,7 +39,6 @@ CS152 LBA/
 │   ├── ba_expert_system.py       # Text-based numbered menu version
 │   ├── kb_ba.pl                  # Buenos Aires knowledge base (38 restaurants + more)
 │   └── maps_urls.pl              # Google Maps URLs for all locations
-├── Removed_when_done_DON'T_USE/  # Old multi-city version (deprecated)
 ├── .gitignore
 └── README.md
 ```
